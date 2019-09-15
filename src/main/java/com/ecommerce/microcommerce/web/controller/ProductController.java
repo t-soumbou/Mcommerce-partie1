@@ -108,6 +108,17 @@ public class ProductController {
 		return productAndMarge;
 		
 	}
+	
+	@GetMapping(value = "/SortedProductByName")
+	public MappingJacksonValue trierProduitsParOrdreAlphabetique () {
+		List<Product> productSortedByName = productDao.findByOrderByNomAsc();
+		if (productSortedByName == null)
+			throw new ProduitIntrouvableException("Aucun produits trouvé");
+		MappingJacksonValue productSorted = new MappingJacksonValue(productSortedByName);
+		
+		return productSorted;
+		
+	}
 
 
     //Pour les tests
