@@ -17,6 +17,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Api( description="API pour es opérations CRUD sur les produits.")
@@ -94,6 +96,18 @@ public class ProductController {
 
         productDao.save(product);
     }
+    
+	@GetMapping(value = "/AdminProduits")
+	public MappingJacksonValue calculerMargeProduit () {
+		List<Product> products = productDao.findAll();
+		if (products == null)
+			throw new ProduitIntrouvableException("Aucun produits trouvé");
+		Map<String, Integer> result = products.stream().collect(Collectors.toMap(p->p.toString(), p->(p.getPrix() - p.getPrixAchat())));
+		MappingJacksonValue productAndMarge = new MappingJacksonValue(result);
+		
+		return productAndMarge;
+		
+	}
 
 
     //Pour les tests
